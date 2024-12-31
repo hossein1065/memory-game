@@ -33,6 +33,6 @@
 }
 
 
- .front-side{
+.front-side{
   transform: rotateY(180deg);
  }
