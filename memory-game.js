@@ -3,7 +3,8 @@ const doubleCards = [];
 const finalCards = [];
 const temproryCards = [];
 const backsidecard = [];
-let totalCounter=0
+let totalCounter=0;
+let matchedCards = 0;
 
 const urlPic =
   "https://raw.githubusercontent.com/hossein1065/hossein1065.github.io/refs/heads/javascript-javascript3-week1/hossein/cards.json";
@@ -88,9 +89,9 @@ function flip(eventFlip) {
     if (temproryCards.length === 2) {
       setTimeout(checkCards, 1000);
     }
-    if (doubleCards.length === 0) {
-      stopTimer();
-    }
+    //if (doubleCards.length === 0) {
+      //stopTimer();
+    //}
   }
 }
 function checkCards() {
@@ -98,9 +99,13 @@ function checkCards() {
   if (card1.id === card2.id) {
     card1.element.dataset.tag = "false";
     card2.element.dataset.tag = "false";
-    doubleCards.splice(doubleCards.indexOf(card1), 1);
-    doubleCards.splice(doubleCards.indexOf(card2), 1);
-  } else {
+    matchedCards++
+    if ( matchedCards===cardsInfo.length){
+      stopTimer()
+    }
+    //doubleCards.splice(doubleCards.indexOf(card1), 1);
+    //doubleCards.splice(doubleCards.indexOf(card2), 1);
+  }else {
     card1.element.classList.remove("rotate");
     card2.element.classList.remove("rotate");
   }
