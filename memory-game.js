@@ -15,14 +15,13 @@ fetch(backSidePic)
   .then((response) => response.json())
   .then((pic) => backsidecard.push(pic));
 
-async function getCardsPic(urlPic) {
-  const response = await fetch(urlPic);
-  const cardPic = await response.json();
 
+async function getCardsPic(url) {
+  const response = await fetch(url);
+  const cardPic = await response.json();
   cardPic.forEach((card) => {
     cardsInfo.push(card);
   });
-
   cardsInfo.forEach((card) => {
     doubleCards.push(card);
     doubleCards.push(card);
@@ -100,7 +99,7 @@ function checkCards() {
     card1.element.dataset.tag = "false";
     card2.element.dataset.tag = "false";
     matchedCards++
-    if ( matchedCards===cardsInfo.length){
+    if ( matchedCards===(cardsInfo.length)/2){
       stopTimer()
     }
     //doubleCards.splice(doubleCards.indexOf(card1), 1);
@@ -133,6 +132,7 @@ function stopTimer() {
   clearInterval(holderTime);
   holderTime = 0;
 }
+
 getCardsPic(urlPic);
 
  
