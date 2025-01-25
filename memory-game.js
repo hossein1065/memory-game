@@ -1,10 +1,9 @@
 const cardsInfo = [];
-const doubleCards = [];
 const finalCards = [];
 const temproryCards = [];
-const backsidecard = [];
+let backsidecard;
 let totalCounter = 0;
-let matchedCards = 0;
+let numberMatchedCards = 0;
 let totalTime = 0;
 let holderTime;
 
@@ -13,25 +12,17 @@ const urlPic =
 const backSidePic =
   "https://raw.githubusercontent.com/hossein1065/hossein1065.github.io/refs/heads/javascript-javascript3-week1/hossein/backside.json";
 
-async function getBacksideImage() {
-  const response = await fetch(backSidePic);
-  const pic = await response.json();
-  backsidecard.push(pic);
-}
+async function getCardsPic() {
+  const backresponse = await fetch(backSidePic);
+  backsidecard = (await backresponse.json()).image;
 
-async function getCardsPic(url) {
-  await getBacksideImage();
-  const response = await fetch(url);
+  const response = await fetch(urlPic);
   const cardPic = await response.json();
   cardPic.forEach((card) => {
-    cardsInfo.push(card);
-  });
-  cardsInfo.forEach((card) => {
-    doubleCards.push(card, card);
+    cardsInfo.push(card, card);
   });
 
-  creatRandom(doubleCards);
-
+  creatRandom(cardsInfo);
   showCards();
 }
 
@@ -49,10 +40,9 @@ function showCards() {
     cardHtml += `
    <div class="card" >
       <div class="card-front-back" data-id="${card.id}" data-tag="true">
-        <img src="${backsidecard[0].image}" class="back-side back-side-js ">
+        <img src="${backsidecard}" class="back-side back-side-js ">
         <img src="${card.image}" class="front-side front-side-js">
       </div>
-     
     </div>
   `;
   });
@@ -60,6 +50,7 @@ function showCards() {
   document.querySelector(".game-cards").innerHTML = cardHtml;
 
   const cards = document.querySelectorAll(`.card`);
+
   cards.forEach((card) => {
     const cardInner = card.querySelector(".card-front-back");
     cardInner.addEventListener(`click`, flip);
@@ -77,15 +68,7 @@ function flip(eventFlip) {
     cardInner.classList.add("rotate");
 
     const cardId = Number(cardInner.dataset.id);
-    const cardInfo = cardsInfo.find((card) => card.id === cardId);
-    if (cardInfo) {
-      cardInfo.counter++;
-    }
-    const counterElement =
-      cardInner.parentElement.querySelector(".card-counter");
-    if (counterElement) {
-      counterElement.textContent = cardInfo.counter;
-    }
+
     temproryCards.push({
       id: cardInner.dataset.id,
       element: cardInner,
@@ -94,18 +77,17 @@ function flip(eventFlip) {
     if (temproryCards.length === 2) {
       setTimeout(checkCards, 1000);
     }
-    
   }
 }
 
 function checkCards() {
   const [card1, card2] = temproryCards;
   if (card1.id === card2.id) {
-    matchedCards++;
+    numberMatchedCards++;
     card1.element.dataset.tag = "false";
     card2.element.dataset.tag = "false";
 
-    if (matchedCards === cardsInfo.length ) {
+    if (numberMatchedCards === finalCards.length / 2) {
       stopTimer();
     }
   } else {
@@ -114,7 +96,6 @@ function checkCards() {
   }
   temproryCards.length = 0;
 }
-
 function startTime() {
   if (holderTime) return;
 
@@ -132,11 +113,9 @@ function startTime() {
 }
 
 function stopTimer() {
-  clearInterval(holderTime);
-  holderTime = null;
-  console.log(" the game end");
+  if (holderTime !== null) {
+    clearInterval(holderTime);
+    holderTime = null;
+  }
 }
 getCardsPic(urlPic);
-
-
-
