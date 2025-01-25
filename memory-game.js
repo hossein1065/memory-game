@@ -3,30 +3,35 @@ const doubleCards = [];
 const finalCards = [];
 const temproryCards = [];
 const backsidecard = [];
-let totalCounter=0;
+let totalCounter = 0;
 let matchedCards = 0;
+let totalTime = 0;
+let holderTime;
 
 const urlPic =
   "https://raw.githubusercontent.com/hossein1065/hossein1065.github.io/refs/heads/javascript-javascript3-week1/hossein/cards.json";
 const backSidePic =
   "https://raw.githubusercontent.com/hossein1065/hossein1065.github.io/refs/heads/javascript-javascript3-week1/hossein/backside.json";
 
-fetch(backSidePic)
-  .then((response) => response.json())
-  .then((pic) => backsidecard.push(pic));
-
+async function getBacksideImage() {
+  const response = await fetch(backSidePic);
+  const pic = await response.json();
+  backsidecard.push(pic);
+}
 
 async function getCardsPic(url) {
+  await getBacksideImage();
   const response = await fetch(url);
   const cardPic = await response.json();
   cardPic.forEach((card) => {
     cardsInfo.push(card);
   });
   cardsInfo.forEach((card) => {
-    doubleCards.push(card);
-    doubleCards.push(card);
+    doubleCards.push(card, card);
   });
+
   creatRandom(doubleCards);
+
   showCards();
 }
 
@@ -47,13 +52,13 @@ function showCards() {
         <img src="${backsidecard[0].image}" class="back-side back-side-js ">
         <img src="${card.image}" class="front-side front-side-js">
       </div>
-      <div class="card-counter">${card.counter}</div>
+     
     </div>
   `;
   });
 
-  const gameCardsElement = document.querySelector(".game-cards");
-  gameCardsElement.innerHTML = cardHtml;
+  document.querySelector(".game-cards").innerHTML = cardHtml;
+
   const cards = document.querySelectorAll(`.card`);
   cards.forEach((card) => {
     const cardInner = card.querySelector(".card-front-back");
@@ -63,13 +68,14 @@ function showCards() {
 
 function flip(eventFlip) {
   startTime();
-  totalCounter++
-  document.querySelector("#total-click-js").innerHTML=totalCounter;
+  totalCounter++;
+  document.querySelector("#total-click-js").innerHTML = totalCounter;
 
   const cardInner = eventFlip.currentTarget;
 
   if (cardInner.dataset.tag === "true" && temproryCards.length < 2) {
     cardInner.classList.add("rotate");
+
     const cardId = Number(cardInner.dataset.id);
     const cardInfo = cardsInfo.find((card) => card.id === cardId);
     if (cardInfo) {
@@ -88,33 +94,30 @@ function flip(eventFlip) {
     if (temproryCards.length === 2) {
       setTimeout(checkCards, 1000);
     }
-    //if (doubleCards.length === 0) {
-      //stopTimer();
-    //}
+    
   }
 }
+
 function checkCards() {
   const [card1, card2] = temproryCards;
   if (card1.id === card2.id) {
+    matchedCards++;
     card1.element.dataset.tag = "false";
     card2.element.dataset.tag = "false";
-    matchedCards++
-    if ( matchedCards===(cardsInfo.length)/2){
-      stopTimer()
+
+    if (matchedCards === cardsInfo.length ) {
+      stopTimer();
     }
-    //doubleCards.splice(doubleCards.indexOf(card1), 1);
-    //doubleCards.splice(doubleCards.indexOf(card2), 1);
-  }else {
+  } else {
     card1.element.classList.remove("rotate");
     card2.element.classList.remove("rotate");
   }
   temproryCards.length = 0;
 }
- 
-let totalTime = 0;
-let holderTime;
 
 function startTime() {
+  if (holderTime) return;
+
   holderTime = setInterval(function () {
     totalTime++;
     let minutes = Math.floor(totalTime / 6000);
@@ -130,9 +133,10 @@ function startTime() {
 
 function stopTimer() {
   clearInterval(holderTime);
-  holderTime = 0;
+  holderTime = null;
+  console.log(" the game end");
 }
-
 getCardsPic(urlPic);
 
- 
+
+

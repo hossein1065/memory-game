@@ -8,18 +8,7 @@
   width: 200px;
   height: 150px;
   perspective: 1000px;
-  position: relative;
   
-}
-.card-counter{
-  position: absolute;
-  color: red;
-  bottom: 0;
-  right: 0;
-  width: 30px;
-  text-align: center;
-
-
 }
 
 .card-front-back{
