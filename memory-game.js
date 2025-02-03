@@ -1,9 +1,9 @@
-const cardsInfo = [];
-const finalCards = [];
-const temproryCards = [];
+const cardsInfo = [];        //  Stores information about the cards
+const finalCards = [];       //   Holds the shuffled cards.
+const temproryCards = [];    //Temporarily stores the two cards selected by the user
 let backsidecard;
-let totalCounter = 0;
-let numberMatchedCards = 0;
+let totalCounter = 0;     //This is for the number of user attempts.
+let numberMatchedCards = 0;   
 let totalTime = 0;
 let holderTime;
 
@@ -18,6 +18,7 @@ async function getCardsPic() {
 
   const response = await fetch(urlPic);
   const cardPic = await response.json();
+  
   cardPic.forEach((card) => {
     cardsInfo.push(card, card);
   });
@@ -47,6 +48,17 @@ function showCards() {
   `;
   });
 
+  // const cardHtml = finalCards.map((card) => {
+  //   return cardHtml += `
+  //  <div class="card" >
+  //     <div class="card-front-back" data-id="${card.id}" data-tag="true">
+  //       <img src="${backsidecard}" class="back-side back-side-js ">
+  //       <img src="${card.image}" class="front-side front-side-js">
+  //     </div>
+  //   </div>
+  // `;
+  // })
+
   document.querySelector(".game-cards").innerHTML = cardHtml;
 
   const cards = document.querySelectorAll(`.card`);
@@ -61,8 +73,8 @@ function flip(eventFlip) {
   startTime();
   totalCounter++;
   document.querySelector("#total-click-js").innerHTML = totalCounter;
-
-  const cardInner = eventFlip.currentTarget;
+    // when the user clicks on the cards, I need the element .card-front-back where the event is actually registered . You want to perform operations like rotating the card on this specific element, not on inner elements like the image or backside of the card
+  const cardInner = eventFlip.currentTarget;    //   is useful when you want to perform operations on the element where the event listener is registered, not just the element the user directly interacted with.
 
   if (cardInner.dataset.tag === "true" && temproryCards.length < 2) {
     cardInner.classList.add("rotate");
